@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Axiom MK-II Performance Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #121212;
+        color: #eaeaea;
+      }
+      .main-card {
+        background-color: #1f1f1f;
+        border: 1px solid #333333;
+        transition: all 0.3s ease;
+      }
+      .main-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        border-color: #444;
+      }
+      .kpi-card {
+        background-color: #1f1f1f;
+        border: 1px solid #333333;
+      }
+      .header-gradient {
+        background: -webkit-linear-gradient(45deg, #a8b2ff, #8c9eff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .table-container {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+      .table-container::-webkit-scrollbar {
+        width: 8px;
+      }
+      .table-container::-webkit-scrollbar-track {
+        background: #1f1f1f;
+        border-radius: 10px;
+      }
+      .table-container::-webkit-scrollbar-thumb {
+        background-color: #4a4a4a;
+        border-radius: 10px;
+        border: 2px solid #1f1f1f;
+      }
+      .stat-value {
+        font-size: 2.5rem;
+        line-height: 1;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- CONFIRMATION: NEITHER MERMAID JS NOR SVG WERE USED IN THIS DOCUMENT. ALL VISUALIZATIONS USE CHART.JS (CANVAS) OR STRUCTURED HTML/CSS. -->
+    <!-- PALETTE SELECTION: PROFESSIONAL NIGHT THEME (CHARCOAL, GREYS, VIBRANT ACCENTS) -->
+    <div class="container mx-auto p-4 md:p-8">
+      <header class="text-center mb-16">
+        <h1
+          class="text-4xl md:text-5xl font-extrabold text-white tracking-tight header-gradient"
+        >
+          Axiom MK-II
+        </h1>
+        <p class="text-lg md:text-xl text-gray-400 mt-2 font-light">
+          System Performance Analysis
+        </p>
+      </header>
+
+      <main>
+        <section
+          id="kpi-summary"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-16"
+        >
+          <div
+            class="kpi-card rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <h3
+              class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2"
+            >
+              Max Potential Return
+            </h3>
+            <p class="stat-value font-bold text-[#FFC107]">+634.62%</p>
+            <p class="text-xs text-gray-500 mt-1">(Idealized Compounded)</p>
+          </div>
+          <div
+            class="kpi-card rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <h3
+              class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2"
+            >
+              Win Rate
+            </h3>
+            <p class="stat-value font-bold text-[#50C878]">91.67%</p>
+            <p class="text-xs text-gray-500 mt-1">(11 Wins / 12 Entries)</p>
+          </div>
+          <div
+            class="kpi-card rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <h3
+              class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2"
+            >
+              Signal Day Frequency
+            </h3>
+            <p class="stat-value font-bold text-gray-200">54.55%</p>
+            <p class="text-xs text-gray-500 mt-1">(6 Signal Days / 11 Total)</p>
+          </div>
+          <div
+            class="kpi-card rounded-lg p-6 flex flex-col items-center justify-center text-center"
+          >
+            <h3
+              class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2"
+            >
+              Critical Saves
+            </h3>
+            <p class="stat-value font-bold text-[#89CFF0]">5+</p>
+            <p class="text-xs text-gray-500 mt-1">(Entries Avoided)</p>
+          </div>
+        </section>
+
+        <section
+          id="portfolio-growth"
+          class="main-card rounded-lg p-6 md:p-8 mb-16"
+        >
+          <h2 class="text-2xl font-bold text-white mb-2">
+            Portfolio Growth Trajectory
+          </h2>
+          <p class="text-gray-400 mb-6 text-sm max-w-3xl">
+            This chart illustrates the idealized maximum potential compounded
+            return over the testing period, assuming each winning signal was
+            captured at its peak performance and each loss was a standard 1R.
+            This provides a view into the raw power of the signals being
+            generated.
+          </p>
+          <div class="h-96">
+            <canvas id="compoundedReturnChart"></canvas>
+          </div>
+        </section>
+
+        <section id="chart-analysis" class="mb-16">
+          <h2 class="text-2xl font-bold text-white mb-4">
+            Chart Analysis & Pattern Library
+          </h2>
+          <p class="text-gray-400 mb-8 text-sm max-w-3xl">
+            This gallery contains the detailed analysis of individual trades to
+            identify repeatable patterns for entry and exit optimization. The
+            key finding is a consistent "VWAP Reclaim" pattern that precedes the
+            most powerful moves.
+          </p>
+          <div
+            id="case-study-grid"
+            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
+          ></div>
+        </section>
+
+        <section id="daily-log">
+          <h2 class="text-2xl font-bold text-white mb-4">
+            Detailed Daily Performance Log
+          </h2>
+          <p class="text-gray-400 mb-6 text-sm max-w-3xl">
+            The following table provides a chronological record of every trading
+            day in the test period. It includes every signal generated, the
+            outcome, and critical notes for analysis. "Critical Saves" refer to
+            instances where a signal was generated but the mechanical entry rule
+            was not met, preventing a losing trade.
+          </p>
+          <div class="table-container main-card rounded-lg p-2">
+            <table class="w-full text-sm text-left">
+              <thead
+                class="text-xs text-gray-400 uppercase sticky top-0 bg-[#1F1F1F] bg-opacity-90 backdrop-blur-sm"
+              >
+                <tr>
+                  <th scope="col" class="px-6 py-3">Date</th>
+                  <th scope="col" class="px-6 py-3">Ticker</th>
+                  <th scope="col" class="px-6 py-3">Entry?</th>
+                  <th scope="col" class="px-6 py-3">Outcome (% Max)</th>
+                  <th scope="col" class="px-6 py-3 hidden md:table-cell">
+                    Notes & Audit Flags
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="log-body" class="divide-y divide-gray-800"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+      <footer class="text-center mt-16 text-xs text-gray-600">
+        <p>
+          This report is generated for analytical purposes only. Past
+          performance is not indicative of future results.
+        </p>
+        <p>Data based on Axiom MK-II system logs.</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const tradeData = [
+          {
+            date: '2025-06-11',
+            ticker: 'HSDT',
+            entry: true,
+            outcome: 18.0,
+            notes:
+              'Win after a significant initial drawdown, validating the hard stop rule.',
+          },
+          {
+            date: '2025-06-11',
+            ticker: 'INEO',
+            entry: true,
+            outcome: 22.51,
+            notes:
+              'Strong win, but required enduring a large initial dip. Proves the volatility of these setups.',
+          },
+          {
+            date: '2025-06-11',
+            ticker: 'KZIA',
+            entry: true,
+            outcome: 22.38,
+            notes:
+              'Another win preceded by a major drawdown. Reinforces the need for mechanical entry/stops.',
+          },
+          {
+            date: '2025-06-10',
+            ticker: 'PLUG',
+            entry: true,
+            outcome: 4.37,
+            notes: 'Solid win on a dual-catalyst, high short interest setup.',
+          },
+          {
+            date: '2025-06-10',
+            ticker: 'INSM',
+            entry: true,
+            outcome: 2.0,
+            notes:
+              'Small win. Excellent trade management by user secured a break-even result.',
+          },
+          {
+            date: '2025-06-10',
+            ticker: 'EVGN',
+            entry: false,
+            outcome: null,
+            notes:
+              'CRITICAL SAVE. System identified a massive pre-market mover, but the entry rule correctly kept us out of a chaotic situation.',
+          },
+          {
+            date: '2025-06-09',
+            ticker: 'N/A',
+            entry: null,
+            outcome: null,
+            notes:
+              'IMPORTANT DAY. System correctly rejected losers but also missed the `NVTS` +10% win due to low Structure/Momentum scores.',
+          },
+          {
+            date: '2025-06-06',
+            ticker: 'N/A',
+            entry: null,
+            outcome: null,
+            notes:
+              'SYSTEM REJECTED ALL CANDIDATES. Correctly identified movers but disqualified them for low relative pre-market volume.',
+          },
+          {
+            date: '2025-06-05',
+            ticker: 'KNW',
+            entry: true,
+            outcome: 44.74,
+            notes: 'System correctly identified #1 runner. A+ catalyst.',
+          },
+          {
+            date: '2025-06-05',
+            ticker: 'BJDX',
+            entry: true,
+            outcome: 12.6,
+            notes: 'Weaker catalyst but strong structure/momentum.',
+          },
+          {
+            date: '2025-06-05',
+            ticker: 'VERO',
+            entry: false,
+            outcome: -40.0,
+            notes:
+              'CRITICAL SAVE: Entry rule prevented a catastrophic loss. AUDIT: Why was this selected with offering news?',
+          },
+          {
+            date: '2025-06-04',
+            ticker: 'KWM',
+            entry: true,
+            outcome: 25.0,
+            notes:
+              'Strong win. System correctly identified a complex but powerful catalyst.',
+          },
+          {
+            date: '2025-06-04',
+            ticker: 'SGMT',
+            entry: true,
+            outcome: 8.0,
+            notes: 'Profitable trade, but required enduring a -6.5% drawdown.',
+          },
+          {
+            date: '2025-06-03',
+            ticker: 'N/A',
+            entry: null,
+            outcome: null,
+            notes:
+              "CORRECTLY DID NOTHING. Confirmed 'down day' for the tickers it analyzed.",
+          },
+          {
+            date: '2025-06-02',
+            ticker: 'VERA',
+            entry: true,
+            outcome: -1.0,
+            notes:
+              'FIRST LOSS. Invaluable lesson: A 10/10 Catalyst score is not enough if Momentum is 0.',
+          },
+          {
+            date: '2025-05-29',
+            ticker: 'TPST',
+            entry: false,
+            outcome: null,
+            notes:
+              'DATA FAILURE. Faulty volume data led to a bad signal. Entry rule saved from a trade.',
+          },
+          {
+            date: '2025-05-28',
+            ticker: 'SPRO',
+            entry: true,
+            outcome: 30.0,
+            notes:
+              'RECLASSIFIED AS WIN. A successful signal that found a +30% runner. The initial dip is a key data point for optimizing our entry strategy.',
+          },
+          {
+            date: '2025-05-28',
+            ticker: 'LVWR',
+            entry: true,
+            outcome: 19.0,
+            notes:
+              "IMPORTANT WIN: An 'A-minus' signal with a 0-point catalyst won based purely on Structure and Momentum.",
+          },
+          {
+            date: '2025-05-27',
+            ticker: 'ETWO',
+            entry: false,
+            outcome: null,
+            notes:
+              'CRITICAL SAVE. System identified a valid M&A catalyst, but the entry rule was not triggered.',
+          },
+        ].reverse();
+
+        const caseStudies = [
+          {
+            ticker: 'KZIA',
+            date: '06-11',
+            imageUrl: 'https://i.postimg.cc/DwTnbRs5/unnamed.png',
+            impHigh: 23.3,
+            emaExit: -2.8,
+            vwapExit: -8.8,
+            note: 'A raw 5-min high break is too early; VWAP-reclaim + higher-low provided a cleaner risk profile.',
+          },
+          {
+            ticker: 'PLUG',
+            date: '06-10',
+            imageUrl: 'https://i.postimg.cc/0yXfM1KJ/image.png',
+            impHigh: 4.1,
+            emaExit: 0.0,
+            vwapExit: -3.4,
+            note: 'Confirms VWAP reclaim works even without an initial washout; textbook flag and hold pattern.',
+          },
+          {
+            ticker: 'INSM',
+            date: '06-10',
+            imageUrl: 'https://i.postimg.cc/0QsJrVnw/image.png',
+            impHigh: 2.3,
+            emaExit: 0.2,
+            vwapExit: -1.1,
+            note: "Shows reclaim alone isn't enough; a fresh HOD trigger is needed to confirm power.",
+          },
+          {
+            ticker: 'KWM',
+            date: '06-04',
+            imageUrl: 'https://i.postimg.cc/Nf9fq17q/image.png',
+            impHigh: 28.8,
+            emaExit: 8.4,
+            vwapExit: -8.6,
+            note: 'Confirms deep washout -> reclaim -> HOD break is a high Reward:Risk entry signal.',
+          },
+          {
+            ticker: 'SPRO',
+            date: '05-28',
+            imageUrl: 'https://i.postimg.cc/htGFRgqJ/image.png',
+            impHigh: 4.2,
+            emaExit: -2.5,
+            vwapExit: -10.1,
+            note: 'Classic dip-and-rip pattern. The initial impulse was small before a deeper pullback.',
+          },
+          {
+            ticker: 'LVWR',
+            date: '05-28',
+            imageUrl: 'https://i.postimg.cc/D0msK85j/image.png',
+            impHigh: 13.1,
+            emaExit: -2.5,
+            vwapExit: -3.5,
+            note: 'Example of a late-day squeeze after a long base under VWAP. A different pattern to study.',
+          },
+        ];
+
+        const chartColors = {
+          win: '#50C878',
+          loss: '#DC3545',
+          noSignal: '#4A4A4A',
+          grid: 'rgba(255, 255, 255, 0.1)',
+          text: '#EAEAEA',
+          accent: '#FFC107', // Gold
+        };
+
+        const tooltipConfig = {
+          plugins: {
+            tooltip: {
+              backgroundColor: 'rgba(31, 31, 31, 0.9)',
+              titleColor: '#EAEAEA',
+              bodyColor: '#B0B0B0',
+              borderColor: '#4A4A4A',
+              borderWidth: 1,
+              titleFont: { size: 14 },
+              bodyFont: { size: 12 },
+              padding: 10,
+              boxPadding: 4,
+              callbacks: {
+                title: function (tooltipItems) {
+                  const item = tooltipItems[0];
+                  let label = item.chart.data.labels[item.dataIndex];
+                  if (Array.isArray(label)) {
+                    return label.join(' ');
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+        };
+
+        const compoundedReturnData = [
+          100.0, 119.0, 154.7, 154.7, 153.15, 153.15, 165.4, 206.75, 232.79,
+          336.94, 336.94, 336.94, 336.94, 343.68, 358.72, 438.99, 537.81,
+          634.62,
+        ];
+        const compoundedReturnLabels = [
+          'May 27',
+          'May 28',
+          'May 28',
+          'May 29',
+          'Jun 02',
+          'Jun 03',
+          'Jun 04',
+          'Jun 04',
+          'Jun 05',
+          'Jun 05',
+          'Jun 06',
+          'Jun 09',
+          'Jun 10',
+          'Jun 10',
+          'Jun 11',
+          'Jun 11',
+          'Jun 11',
+        ];
+
+        new Chart(document.getElementById('compoundedReturnChart'), {
+          type: 'line',
+          data: {
+            labels: compoundedReturnLabels,
+            datasets: [
+              {
+                label: 'Max Potential Compounded Return (%)',
+                data: compoundedReturnData,
+                borderColor: chartColors.accent,
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: chartColors.accent,
+                pointBorderColor: '#121212',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 8,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                grid: { color: chartColors.grid },
+                ticks: {
+                  color: chartColors.text,
+                  font: { size: 10 },
+                  callback: function (value) {
+                    return value + '%';
+                  },
+                },
+              },
+              x: {
+                grid: { display: false },
+                ticks: {
+                  color: chartColors.text,
+                  font: { size: 10 },
+                  maxRotation: 0,
+                  minRotation: 0,
+                },
+              },
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                ...tooltipConfig.plugins.tooltip,
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                  ...tooltipConfig.plugins.tooltip.callbacks,
+                  label: function (context) {
+                    return ` Return: ${context.parsed.y.toFixed(2)}%`;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        function populateTable() {
+          const tbody = document.getElementById('log-body');
+          tbody.innerHTML = '';
+          tradeData.forEach(trade => {
+            let outcomeClass, outcomeSymbol, outcomeText;
+            if (trade.outcome > 0) {
+              outcomeClass = 'text-green-400';
+              outcomeSymbol = '▲';
+              outcomeText = `+${trade.outcome.toFixed(2)}%`;
+            } else if (trade.outcome < 0) {
+              outcomeClass = 'text-red-500';
+              outcomeSymbol = '▼';
+              outcomeText = `${trade.outcome.toFixed(2)}%`;
+            } else if (trade.outcome === null && trade.entry === false) {
+              outcomeClass = 'text-yellow-500';
+              outcomeSymbol = '▶';
+              outcomeText = 'No Entry';
+            } else if (trade.outcome === null && trade.entry === null) {
+              outcomeClass = 'text-gray-500';
+              outcomeSymbol = '—';
+              outcomeText = 'No Signal';
+            } else {
+              outcomeClass = 'text-gray-400';
+              outcomeSymbol = '●';
+              outcomeText = 'B/E or Dud';
+            }
+            const row = `
+                        <tr class="hover:bg-gray-800 transition-colors duration-200">
+                            <td class="px-6 py-4 font-medium whitespace-nowrap">${
+                              trade.date
+                            }</td>
+                            <td class="px-6 py-4 font-bold text-white">${
+                              trade.ticker
+                            }</td>
+                            <td class="px-6 py-4">${
+                              trade.entry === true
+                                ? 'Yes'
+                                : trade.entry === false
+                                ? 'No'
+                                : 'N/A'
+                            }</td>
+                            <td class="px-6 py-4 font-semibold ${outcomeClass}">
+                                <span class="mr-2">${outcomeSymbol}</span>${outcomeText}
+                            </td>
+                            <td class="px-6 py-4 text-gray-400 text-xs hidden md:table-cell">${
+                              trade.notes
+                            }</td>
+                        </tr>
+                    `;
+            tbody.innerHTML += row;
+          });
+        }
+
+        function populateCaseStudies() {
+          const grid = document.getElementById('case-study-grid');
+          grid.innerHTML = '';
+          caseStudies.forEach(study => {
+            const imageUrl = study.imageUrl.startsWith('PASTE')
+              ? `https://placehold.co/600x400/1F1F1F/EAEAEA?text=${study.ticker}+Chart+Here`
+              : study.imageUrl;
+            const card = `
+                        <div class="main-card rounded-lg p-6 flex flex-col">
+                            <img src="${imageUrl}" alt="${
+              study.ticker
+            } Chart" class="w-full h-48 object-cover rounded-md mb-4 bg-gray-800 border border-gray-700">
+                            <h4 class="text-xl font-bold text-white">${
+                              study.ticker
+                            } <span class="text-sm font-light text-gray-400">${
+              study.date
+            }</span></h4>
+                            <div class="text-xs text-gray-400 mt-2 grid grid-cols-3 gap-2 text-center">
+                                <div>
+                                    <p class="font-semibold text-gray-300">Impulse High</p>
+                                    <p class="font-mono text-green-400">+${study.impHigh.toFixed(
+                                      2
+                                    )}%</p>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-300">9-EMA Exit</p>
+                                    <p class="font-mono ${
+                                      study.emaExit >= 0
+                                        ? 'text-green-400'
+                                        : 'text-red-500'
+                                    }">${study.emaExit.toFixed(2)}%</p>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-300">VWAP Exit</p>
+                                    <p class="font-mono ${
+                                      study.vwapExit >= 0
+                                        ? 'text-green-400'
+                                        : 'text-red-500'
+                                    }">${study.vwapExit.toFixed(2)}%</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-4 italic border-l-2 border-yellow-500 pl-3"><strong>Key Takeaway:</strong> ${
+                              study.note
+                            }</p>
+                        </div>
+                    `;
+            grid.innerHTML += card;
+          });
+        }
+        populateTable();
+        populateCaseStudies();
+      });
+    </script>
+  </body>
+</html>
